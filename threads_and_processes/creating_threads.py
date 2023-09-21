@@ -24,7 +24,7 @@ def run_do_work():
 
 def run_cpu_intensive_work():
     for i in range(5):
-        t = Thread(target=do_cpu_intensive_work, args=[i + 1])
+        t = Thread(target=do_cpu_intensive_work, args=(i + 1,))
         t.start()
 
 if __name__ == '__main__':
