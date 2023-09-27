@@ -15,10 +15,10 @@ class WaitGroup:
             self.wait_count -= 1
         if self.wait_count == 0:
             self.cv.notify_all()
-        self.cv.acquire()
+        self.cv.release()
 
     def wait(self):
         self.cv.acquire()
         while self.wait_count > 0:
             self.cv.wait()
-        self.cv.acquire()
+        self.cv.release()
