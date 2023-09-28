@@ -1,3 +1,5 @@
+"""Basic demo of multiprocessing"""
+
 import multiprocessing
 from multiprocessing import Process
 import os

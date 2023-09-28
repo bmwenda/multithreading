@@ -1,3 +1,5 @@
+"""Basic demo of multithreading"""
+
 import os
 import time
 import threading
