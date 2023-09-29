@@ -5,7 +5,7 @@ Run time is O(n^3) hence cpu expensive
 from random import randint
 import time
 
-N = 400 # reasonable number to observe run time
+N = 200 # reasonable number to observe run time
 matrix_a = [[0] * N for a in range(N)]
 matrix_b = [[0] * N for b in range(N)]
 result = [[0] * N for r in range(N)]

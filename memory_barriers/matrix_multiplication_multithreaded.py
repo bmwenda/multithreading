@@ -9,7 +9,7 @@ import time
 from random import randint
 from threading import Barrier, Thread
 
-N = 20 # reasonable number to observe run time
+N = 200 # reasonable number to observe run time
 matrix_a = [[0] * N for a in range(N)]
 matrix_b = [[0] * N for b in range(N)]
 result = [[0] * N for r in range(N)]
@@ -23,27 +23,28 @@ def initiliaze_matrices():
             for col in range(N):
                 matrix[row][col] = randint(-10, 10)
 
-def do_work(row):
-    print(f"computing row {row}..........")
+def row_multiplication(row):
     while True:
         work_start.wait()
         for col in range(N):
             for i in range(N):
                 result[row][col] += matrix_a[row][i] * matrix_b[i][col]
-        work_complete.wait()
+        work_complete.wait() # each thread waits at second barrier after completion
 
-def multiply():
+def create_threads():
+    """Create N threads
+    Threads have a small memory footprint which makes this possible
+    """
     for row in range(N):
-        Thread(target=do_work, args=(row,)).start()
-    print(*result, sep="\n")
+        Thread(target=row_multiplication, args=(row,)).start()
 
 if __name__ == "__main__":
+    create_threads() # create N threads for each row and have them wait at first barrier
     start_time = time.time()
     for i in range(10):
         initiliaze_matrices()
         result = [[0] * N for r in range(N)]
-        work_start.wait()
-        multiply()
-        work_complete.wait()
+        work_start.wait() # main thread calls wait and this unlocks the other threads to do calculation
+        work_complete.wait() # main thread waits at second barrier. When the other N threads reach here, lock is released and next iteration can run
     end_time = time.time()
     print("Finished in", end_time - start_time)
