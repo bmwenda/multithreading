@@ -24,11 +24,13 @@ def row_multiplication(processId, matrix_a, matrix_b, result, work_start, work_c
         for row in range(processId, N, PROCESS_COUNT):
             for col in range(N):
                 for i in range(N):
+                    # For a 1D representation of a matrix, 2DMatrix[row][col] == 1DMatrix[(row * N) + col]
                     result[(row * N) + col] += matrix_a[(row * N) + i] * matrix_b[(row * N) + col]
         work_complete.wait() # each process waits at second barrier after completion
 
 if __name__ == "__main__":
     multiprocessing.set_start_method('fork')
+    # in python, Array data structure in processes can only be 1D, we have to represent matrix in that form
     matrix_a = multiprocessing.Array('i', [0] * (N * N), lock=False)
     matrix_b = multiprocessing.Array('i', [0] * (N * N), lock=False)
     result = multiprocessing.Array('i', [0] * (N * N), lock=False)
