@@ -3,6 +3,7 @@ This introduces multithreading to the same problem from ./matrix_multiplication_
 The strategy is to find the result for each row in a separate thread
 Note that since this is a CPU bound operation, python's Global Interprator Lock
 blocks threads and the gain in using a multithreading approach is not dramatic
+See shared_memory_in_processes/matrix_multiplication.py.py for multiprocessing solution
 """
 
 import time
