@@ -1,26 +1,31 @@
-"""Pipes can be bidirectional where messages can be sent or received by each process
+"""Demonstration of message passing with a duplex(bidirectional) pipe
 """
 
 import time
 import multiprocessing
 from multiprocessing import Process, Pipe
 
-def consumer(pipe):
+def consumer(pipe_conn):
     while True:
-        msg = pipe.recv()
+        msg = pipe_conn.recv()
         print("Consumer received:", msg)
         time.sleep(1)
-        pipe.send(["Hello from consumer at", time.time()])
+        greeting = f"Hello from consumer at, {time.time()}"
+        pipe_conn.send(greeting)
+        print("Consumer sent:", greeting)
 
-def producer(pipe):
+def producer(pipe_conn):
     while(True):
-        pipe.send(["Hello from producer at", time.time()])
-        msg = pipe.recv()
+        greeting = f"Hello from producer at, {time.time()}"
+        pipe_conn.send(greeting)
+        print("Producer sent:", greeting)
+        msg = pipe_conn.recv()
         print("Producer received:", msg)
         time.sleep(1)
 
 
 if __name__ == "__main__":
     multiprocessing.set_start_method("fork")
-    pipe_end_a, pipe_end_b = Pipe() # Pipe() returns a tuple
-    Process(target=producer, args=(pipe_end_a,)).start()
+    pipe_conn_a, pipe_conn_b = Pipe(duplex=True) # Pipe() returns a tuple of Connection objects
+    Process(target=producer, args=(pipe_conn_a,)).start()
+    Process(target=consumer, args=(pipe_conn_b,)).start()
